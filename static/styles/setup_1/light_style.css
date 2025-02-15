@@ -1,0 +1,79 @@
+body {
+    background-color: #a9cae9
+}
+
+.container {
+    background-color: #496b8a17;
+}
+header{
+    background-color: #a9cae9
+}
+.word_input{
+    background: #fffffff2;
+}
+.word_to_highlight{
+    background: #fffe0063;
+    border: 1px;
+    border-radius: 7px;
+}
+.meaning_input{
+    border-color: #0f405d;
+    background: #fffffff2;
+}
+.type_label{
+    color: #0f405d;
+}
+.meaning_label{
+    color: #0f405d;
+}
+.word_label{
+    color: #0f405d;
+}
+.resource_type_lable{
+    color: #0f405d;
+}
+.lemma-custom-checkbox {
+    border: 2px solid #cfcfcf;
+}
+
+.lemma-custom-checkbox:checked {
+
+    border: 2px solid #cfcfcf;
+}
+
+.lemma-custom-checkbox:checked::before {
+    color: #e41320;
+}
+
+ul::-webkit-scrollbar-thumb {
+    background-color: #222140;   /* color of the scroll thumb */
+}
+
+#toggle-circle {
+    box-shadow: 0 0 10px #3498db;
+}
+
+.dropdown-select {
+    border-color: #0f405d;
+    background: #fffffff2;
+}
+.type_button.active {
+    border:2px solid #e41320;
+}
+.examples_word{
+    color: #fc0232
+}
+.search-button {
+    background-color: #0f405d;
+    color: white;
+}
+.thanking_p{
+    color: #0f405d;
+}
+.destination{
+    background: #0f405d;
+    color: #ffffff;
+}
+.active_destination{
+    color: #ffe400;
+}

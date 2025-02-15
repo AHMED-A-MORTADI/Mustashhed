@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستشهِد</title>
+    <link rel="stylesheet" id="main_stylesheet" href="static/styles/setup_2/main_style.css">
+
+    <link rel="stylesheet" id="stylesheet" href="{% if mode == 'light' %}static/styles/setup_2/light_style.css{% else %}static/styles/setup_2/dark_style.css{% endif %}">
+    <style>
+        @font-face {
+            font-family: 'NotoKufiArabic-Regular';
+            src: url('static/styles/Noto_Kufi_Arabic/static/NotoKufiArabic-Regular.ttf') format('truetype');
+            /* You can also include other font formats for better compatibility */
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url({% if mode=="dark" %} "static/images/dark/background.png" {% else %} "static/images/light/background.png" {% endif %});
+            background-size: cover; /* This property ensures that the background image covers the entire body */
+            background-position: center; /* Centers the background image */
+            background-repeat: repeat;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/"><img {% if mode=="dark" %} src="static/images/dark/logo.png" {% else %} src="static/images/light/logo.png" {% endif %} alt="logo"></a>
+</header>
+
+<div class="container">
+    <form action="/change_the_setup" method="post">
+        <button class="destination" type="submit" name="destination" value="3" style="
+                        padding: 0px;
+                        font-size: 14px;
+                        display: inline-block;
+                        width: 203px;
+                        margin-bottom: 5px;
+                        cursor: pointer;
+                        direction: rtl;
+                        margin-left: 24px;
+                        font-family: 'NotoKufiArabic-Regular';
+                        border-radius: 8px;
+                        ">شارك في تطوير معجم الرياض!</button>
+        <button class="destination active_destination" type="submit" name="destination" value="2" style="
+                        padding: 0px;
+                        font-size: 14px;
+                        display: inline-block;
+                        margin-left: 235px;
+                        width: 188px;
+                        margin-bottom: 5px;
+                        cursor: pointer;
+                        font-family: 'NotoKufiArabic-Regular';
+                        border-radius: 8px;
+                        ">استخدم معاني معجم الرياض</button>
+        <button class="destination" type="submit" name="destination" value="1" style="
+                        padding: 0px;
+                        font-size: 14px;
+                        display: inline-block;
+                        width: 140px;
+                        margin-bottom: 5px;
+                        cursor: pointer;
+                        font-family: 'NotoKufiArabic-Regular';
+                        border-radius: 8px;
+                        ">أدخل المعاني بنفسك</button>
+
+    </form>
+    <form id="examples_search_form" action="/get_examples_setup_2" method="POST">
+        <label title="اكتب الكلمة مثال: نجح" for="word_input" class="word_label" >الكلمة</label>
+        <input placeholder="مثال: نجح"  type="text" id="word_input" class="word_input" name="word" value="{{word}}" {% if list_of_meanings_dicts %} readonly style="color: gray; cursor: not-allowed" title="اضغط على إفراغ لإدخال كلمة جديدة" {% else %} title="اكتب الكلمة مثل: 'يأكل'" {% endif %}>
+
+        <img src="static/images/drop_down.png" style="width: 21px;position: absolute;margin: 22px  0 0 34px;">
+        <label title="اختر معنى الكلمة" for="type-select" class="meaning_label">المعنى</label>
+        <select title="اختر معنى الكلمة" class="dropdown-select" name="meaning" id="type-select" {% if not list_of_meanings_dicts %} style="color: gray; cursor: not-allowed" readonly {% endif %}>
+            {% if not list_of_meanings_dicts and not word %}
+            <option>لعرض المعاني: قم بكتابة الكلمة ثم اضغط على "استرجاع المعاني"</option>
+            {% endif %}
+            {% if not list_of_meanings_dicts and  word%}
+            <option>لم نجد معاني!</option>
+            {% endif %}
+            {% if list_of_meanings_dicts %}
+            {% for item in list_of_meanings_dicts %}
+            <option value="{{ item['meaning'] }}" title="{{ item['word_with_diacr'] + ': ' + item['meaning'] }}"
+                    {% if selected_meaning and selected_meaning['meaning'] == item['meaning'] %} selected {% endif %}>
+                {{ item['html'] }}
+            </option>
+            {% endfor %}
+            {% endif %}
+        </select>
+
+
+        <label title="اختر مصدر الأمثلة" class="resource_type_lable" >مصدر الأمثلة</label>
+        <div class="type_button_container">
+            <div id="news"  title="الأخبار" class="type_button" onclick="toggleTypeButton(event, 'news')"><img title="الأخبار" class="resource_type_icon" src="static/images/News_icon.png" alt="News"></div>
+            <div id="poetry"  title="الشّعر العربي" class="type_button" onclick="toggleTypeButton(event, 'poetry')"><img title="الشّعر العربي" class="resource_type_icon" src="static/images/Poetry_icon.png" alt="Poetry"></div>
+            <div id="hadith"  title="كتب السُّنة النبوية" class="type_button" onclick="toggleTypeButton(event, 'hadith')"><img title="كتب السُّنة النبوية" class="resource_type_icon" src="static/images/Sunnah_icon.png" alt=hadith"></div>
+            <div id="quraan"  title="القرآن الكريم" class="type_button" onclick="toggleTypeButton(event, 'quraan')"><img title="القرآن الكريم" class="resource_type_icon" src="static/images/Quran_icon.png" alt="Quran"></div>
+            <div id="all"  title="جميع المصادر" class="type_button" onclick="toggleTypeButton(event, 'all')"><img title="جميع المصادر" class="resource_type_icon" src="static/images/All_icon.png" alt="All"></div>
+
+            <input type="hidden" id="type_hiddenInput" name="resource_type" value="{{resource_type}}">
+        </div>
+
+        <input title="اضغط لإدخال كلمة جديدة" value="إفراغ" class="search-button" id="new_search_button" onclick="new_search()" style="margin: -45px 273px 0px 0px;color: rgb(228, 0, 0);background: gold;display: none;width: 63px;font-family: 'NotoKufiArabic-Regular';font-size: 18px;height: 27px;">
+
+        <input type="submit" id="search_submit" class="search-button" {% if not word and not list_of_meanings_dicts %} value="استرجاع المعاني" title="استرجاع المعاني" {% else %} value="البحث عن الأمثلة" title="البحث عن الأمثلة"  {% endif %}>
+        <div id="overlay">
+            <div id="loader"></div>
+            <span style="direction: rtl">جارٍ البحث...</span>
+        </div>
+    </form>
+    <ul id="examples_ul">
+        {% if examples %}
+            {% for highlighted_word_with_examples in examples%}
+                {% if GROUP_EXAMPLES_BY_WORD_IN_DISPLAY_WAY_2 %}
+                <span class="examples_word">{{highlighted_word_with_examples[0]}}</span>
+                {% endif %}
+                {% for example in highlighted_word_with_examples[1] %}
+                <li>
+                    {{example|safe}}
+                </li>
+                {% endfor %}
+
+            {% endfor %}
+        {% endif %}
+    </ul>
+    <form id="set_mode_form" action="/set_mode" method="POST">
+        <input type="hidden" id="mode_hiddenInput" name="mode" value="{{mode}}">
+
+        <div id="toggle-circle" onclick="toggleMode()" style="background-color: {{ 'rgb(50, 50, 50)' if mode == 'light' else '#3498db' }}" >
+            <span id="mode-icon">{{ "☀️" if mode == 'dark' else '🌙' }}</span>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+
+    if (document.getElementById("type-select").value === "لم نجد معاني!") {
+        var button = document.getElementById("search_submit");
+        button.disabled = true;
+        button.style.color = "gray"
+    }
+
+
+    // Get references to the button and your Flask variables
+    var button = document.getElementById('new_search_button');
+    var list_of_meanings_dicts = {{ list_of_meanings_dicts|default('undefined')|tojson|safe }};
+    var word = "{{ word }}";
+
+    // Check conditions and set the style accordingly
+    if (list_of_meanings_dicts !== 'undefined' && word) {
+        button.style.display = 'inline';
+    } else {
+        button.style.display = 'none';
+    }
+    function new_search(){
+        // Enable the button
+        var button = document.getElementById("search_submit");
+        button.disabled = false;
+        button.style.color = "#ffbd2c"
+        // Change the value attribute
+        button.value = "استرجاع المعاني";
+        // Change the title attribute
+        button.title = "استرجاع المعاني";
+        button.style.cursor = "pointer";
+
+        // Make the select element readonly and set its value to 'لعرض المعاني: قم بكتابة الكلمة ثم اضغط على "استرجاع المعاني"'
+        var selectElement = document.getElementById("type-select");
+        while (selectElement.firstChild) {
+            selectElement.removeChild(selectElement.firstChild);
+        }
+
+        var selectElement = document.getElementById("type-select");
+        var optionValue = 'لعرض المعاني: قم بكتابة الكلمة ثم اضغط على "استرجاع المعاني"';
+
+        // Create a new option element
+        var newOption = document.createElement("option");
+        newOption.value = optionValue;
+        newOption.text = optionValue;
+
+        // Add the new option to the select element
+        selectElement.add(newOption);
+
+        // Set the new option as the selected option
+        selectElement.value = optionValue;
+        selectElement.disabled = true;
+        selectElement.style.color = "gray";
+
+        // Enable the text input and set its value to empty
+        var textInput = document.getElementById("word_input");
+        textInput.readOnly = false;
+        textInput.value = "";
+        textInput.style.color = "#e41320";
+        textInput.title = "البحث عن الأمثلة";
+        // Make the cursor style normal
+        textInput.style.cursor = "text";
+
+        var ulElement = document.getElementById("examples_ul");
+        while (ulElement.firstChild) {
+            ulElement.removeChild(ulElement.firstChild);
+        }
+        document.getElementById("new_search_button").style.display = "none";
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the value of the hidden input
+        var hiddenInputValue = document.getElementById("type_hiddenInput").value;
+
+        // Add 'active' class to the button with the corresponding ID
+        var correspondingButton = document.getElementById(hiddenInputValue);
+        if (correspondingButton) {
+            correspondingButton.classList.add("active");
+        }
+    });
+    function toggleTypeButton(event, buttonId) {
+        event.preventDefault();
+        // Get all buttons
+        var buttons = document.querySelectorAll('.type_button');
+
+        // Loop through each button
+        buttons.forEach(function(button) {
+            // Remove 'active' class from all buttons
+            button.classList.remove('active');
+        });
+
+        // Add 'active' class to the clicked button
+        document.getElementById(buttonId).classList.add('active');
+        document.getElementById("type_hiddenInput").value = buttonId
+    }
+    function toggleMode() {
+        // Get the <link> element
+        var styleSheet = document.getElementById("stylesheet");
+
+        const body = document.body;
+        const hiddenInput = document.getElementById("mode_hiddenInput");
+        modeToggle= document.getElementById("toggle-circle");
+        if (hiddenInput.value === 'light') {
+            // Switch to dark mode
+            body.classList.add("dark-mode");
+            modeToggle.textContent = "☀️"; // Sun icon
+            modeToggle.style.backgroundColor = "#3498db"; // Light mode button color
+            hiddenInput.value = 'dark';
+            // Change the href attribute to the new stylesheet
+            styleSheet.href = "static/styles/setup_2/dark_style.css";
+        } else {
+            // Switch to light mode
+            body.classList.remove("dark-mode");
+            modeToggle.textContent = "🌙"; // Moon icon
+            modeToggle.style.backgroundColor = "rgb(50,50,50)"; // Dark mode button color
+            hiddenInput.value = 'light';
+            // Change the href attribute to the new stylesheet
+            styleSheet.href = "static/styles/setup_2/light_style.css";
+        }
+        document.getElementById('set_mode_form').submit();
+    }
+    function updateSliderValue() {
+        var slider = document.getElementById("num_of_examples");
+        var output = document.getElementById("sliderValue");
+        output.innerHTML = "عدد الأمثلة: " + slider.value;
+    }
+    document.getElementById('examples_search_form').addEventListener('submit', function(event) {
+        var wordInput = document.getElementById('word_input').value.trim();
+
+        if (wordInput === "") {
+            event.preventDefault();
+            document.getElementById('word_input').style.borderColor = 'red';
+
+            // Change the border color back to default after 2 seconds
+            setTimeout(function () {
+
+                document.getElementById('word_input').style.borderColor = '#222140';
+                alert("فضلاً, قم بإدخال الكلمة في الخانة المخصصة لذلك.");
+            }, 150);
+            return
+        }
+        document.getElementById("overlay").style.display = "flex";
+        document.getElementById("loader").style.display = "flex";
+    });
+</script>
+
+</body>
+</html>

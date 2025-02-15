@@ -1,0 +1,85 @@
+body {
+    color: #333; /* Set your default text color */
+    background-color: #a9cae9
+}
+header{
+    background-color: #a9cae9
+}
+.container {
+    background-color: #496b8a17;
+    color: black;
+}
+
+.word_input{
+    background: #fffffff2;
+    border-color: #0f405d;
+}
+
+.meaning_input{
+    background: #fffffff2;
+}
+
+.type_label{
+    margin-right: 5px;
+    color: #0f405d;
+}
+.meaning_label{
+    color: #0f405d;
+}
+.word_label{
+    color: #0f405d;
+}
+.resource_type_lable{
+    color: #0f405d;
+}
+
+.lemma-custom-checkbox {
+    border: 2px solid #20272CFF;
+}
+
+.lemma-custom-checkbox:checked {
+    background-color: #222140;
+    border: 2px solid #20272CFF;
+}
+
+.lemma-custom-checkbox:checked::before {
+    color: #ffcd5f;
+}
+
+ul::-webkit-scrollbar-thumb {
+    background-color: #f4f5f7;   /* color of the scroll thumb */
+}
+
+#toggle-circle {
+    box-shadow: 0 0 10px #3498db;
+}
+
+.dropdown-select {
+    background-color: #fffffff2;
+    border-color: #0f405d;
+}
+.type_button.active {
+    border:2px solid #e41320;
+}
+.examples_word{
+    color: #fc0232;
+    font-size: 31px;
+    margin-right: 1%;
+    font-family: NotoKufiArabic-Regular;
+    color: #fc0232;
+}
+.word_to_highlight{
+    background: #fffe0063;
+    border: 1px;
+    border-radius: 7px;
+}
+.search-button {
+    background-color: #0f405d;
+}
+.destination{
+    background: #0f405d;
+    color: #ffffff;
+}
+.active_destination{
+    color: #ffe400;
+}
